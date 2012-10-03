@@ -17,7 +17,7 @@ public class User {
 	private Contact mContact;
 	private Stats mStats;
 	
-	public class Contact {	
+	public static class Contact {	
 		private int mFoursquare;
 		private int mFacebook;
 		private String mTwitter;
@@ -42,7 +42,7 @@ public class User {
 		} 
 	}
 	
-	public class Stats {			
+	public static class Stats {			
 	    private int mTotalBadges;
 	    private int mTotalFriends;
 	    private int mTotalCheckins;

@@ -32,7 +32,7 @@ public class BreweryParser {
 			if (obj.has("twitter"))
 				contact.setTwitter(obj.getString("twitter"));
 			if (obj.has("facebook"))
-				contact.setTwitter(obj.getString("facebook"));
+				contact.setFacebook(obj.getString("facebook"));
 			if (obj.has("url"))
 				contact.setUrl(obj.getString("url"));
 			

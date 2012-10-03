@@ -4,8 +4,9 @@ public class Badge {
 	private String mName;
     private String mDescription;
     private String mCreatedAt;
+    private Image mImage;
 
-    public class Image {
+    public static class Image {
     	private String mSm;
     	private String mMd;
     	private String mLg;
@@ -52,5 +53,13 @@ public class Badge {
 
 	public void setCreatedAt(String createdAt) {
 		this.mCreatedAt = createdAt;
+	}
+
+	public Image getImage() {
+		return mImage;
+	}
+
+	public void setImage(Image image) {
+		this.mImage = image;
 	}
 }
