@@ -47,7 +47,7 @@ public class UntappdV4 {
 	private String mAccessToken;
 	
 	public UntappdV4(String accessToken) {
-		setAccessToken(accessToken);
+		mAccessToken = accessToken;
 	}
 	
 	public List<Beer> beerSearch(String q, String sort) throws UntappdException {
