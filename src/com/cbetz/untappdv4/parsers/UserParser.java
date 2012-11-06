@@ -35,8 +35,8 @@ public class UserParser {
 			user.setAccountType(obj.getString("account_type"));
 		if (obj.has("date_joined"))
 			user.setDateJoined(obj.getString("date_joined"));
-		if (obj.has("contact"))
-			user.setContact(new ContactParser().parse(obj.getJSONObject("contact")));
+		//if (obj.has("contact"))
+			//user.setContact(new ContactParser().parse(obj.getJSONObject("contact")));
 		if (obj.has("stats"))
 			user.setStats(new StatsParser().parse(obj.getJSONObject("stats")));
 		

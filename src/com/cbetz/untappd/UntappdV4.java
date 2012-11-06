@@ -28,9 +28,11 @@ import com.cbetz.untappd.exceptions.UntappdCredentialsException;
 import com.cbetz.untappd.exceptions.UntappdException;
 import com.cbetz.untappdv4.parsers.CheckinParser;
 import com.cbetz.untappdv4.parsers.BeerParser;
+import com.cbetz.untappdv4.parsers.CheckinResponseParser;
 import com.cbetz.untappdv4.parsers.UserParser;
 import com.cbetz.untappdv4.types.Beer;
 import com.cbetz.untappdv4.types.Checkin;
+import com.cbetz.untappdv4.types.CheckinResponse;
 import com.cbetz.untappdv4.types.User;
 
 public class UntappdV4 {
@@ -39,7 +41,7 @@ public class UntappdV4 {
 	private static final String BEER_INFO = "/beer/info";
 	private static final String BEER_SEARCH = "/search/beer";
 	private static final String CHECKIN_DETAILS = "/checkin/view";
-	private static final String FRIEND_FEED = "/checkins/recent";
+	private static final String FRIEND_FEED = "/checkin/recent";
 	private static final String USER_INFO = "/user/info";
 	private static final String WISHLIST = "/user/wishlist";
 	private static final String WISHLIST_ADD = "/user/wishlist/add";
@@ -50,24 +52,24 @@ public class UntappdV4 {
 		mAccessToken = accessToken;
 	}
 	
-	public List<Beer> beerSearch(String q, String sort) throws UntappdException {
+	public ArrayList<Beer> beerSearch(String q, String sort) throws UntappdException {
 		Beer beer = null;
 		JSONArray array = new JSONArray();
 		
 		try {
 			JSONObject object = getResponse(BEER_SEARCH + "?access_token=" + mAccessToken + "&q=" + URLEncoder.encode(q) + "&sort=" + sort);
-			array = object.getJSONArray("results");
+			array = object.getJSONObject("response").getJSONObject("beers").getJSONArray("items");
 		} catch (JSONException e1) {
 			Log.e("beerSearch", e1.getStackTrace().toString());
 		} catch (UntappdException ue) {
 			throw ue;
 		}
 		
-		List<Beer> beers = new ArrayList<Beer>();
+		ArrayList<Beer> beers = new ArrayList<Beer>();
 		
 		for (int i=0; i<array.length(); ++i){
 			try {
-				beer = new BeerParser().parse(array.getJSONObject(i));
+				beer = new BeerParser().parse(array.getJSONObject(i).getJSONObject("beer"));
 			} catch (JSONException e2) {
 				Log.e("beerSearch", e2.getStackTrace().toString());
 			}
@@ -91,8 +93,8 @@ public class UntappdV4 {
 		return beer;
 	}
 	
-	public Checkin beerCheckin(String bid, String timezone, String shout, String rating, String twitter, String facebook) throws UntappdException {
-		Checkin checkin = null;
+	public CheckinResponse beerCheckin(String bid, String timezone, String shout, String rating, String twitter, String facebook) throws UntappdException {
+		CheckinResponse checkin = null;
 		
 		try {		
 			JSONObject object = postResponse(BEER_CHECKIN + "?access_token=" + mAccessToken, 
@@ -102,7 +104,7 @@ public class UntappdV4 {
 					new BasicNameValuePair("rating", rating),
 					new BasicNameValuePair("twitter", twitter),
 					new BasicNameValuePair("facebook", facebook));
-			checkin = new CheckinParser().parse(object);		
+			checkin = new CheckinResponseParser().parse(object);		
 		} catch (JSONException e) {
 			Log.e("beerCheckin", e.getStackTrace().toString());
 		} catch (UntappdException ue) {
@@ -111,8 +113,8 @@ public class UntappdV4 {
 		return checkin;
 	}
 	
-	public Checkin beerCheckin(String bid, String timezone, String shout, String rating, String twitter, String facebook, String foursquareId, String lat, String lng, String foursquare) throws UntappdException {
-		Checkin checkin = null;
+	public CheckinResponse beerCheckin(String bid, String timezone, String shout, String rating, String twitter, String facebook, String foursquareId, String lat, String lng, String foursquare) throws UntappdException {
+		CheckinResponse checkin = null;
 		
 		try {
 			JSONObject object = postResponse(BEER_CHECKIN + "?access_token=" + mAccessToken, 
@@ -126,7 +128,7 @@ public class UntappdV4 {
 					new BasicNameValuePair("geolng", lng),
 					new BasicNameValuePair("foursquare_id", foursquareId),
 					new BasicNameValuePair("foursquare", foursquare));
-			checkin = new CheckinParser().parse(object);
+			checkin = new CheckinResponseParser().parse(object);
 		} catch (JSONException e) {
 			Log.e("beerCheckin", e.getStackTrace().toString());
 		} catch (UntappdException ue) {
@@ -140,7 +142,7 @@ public class UntappdV4 {
 		
 		try {
 			JSONObject object = getResponse(FRIEND_FEED + "?access_token=" + mAccessToken);
-			array = object.getJSONArray("results");
+			array = object.getJSONObject("response").getJSONObject("checkins").getJSONArray("items");
 		} catch (JSONException e1) {
 			Log.e("userCheckin", e1.getStackTrace().toString());
 		} catch (UntappdException ue) {
@@ -163,7 +165,7 @@ public class UntappdV4 {
 		return userCheckins;
 	}
 	
-	public List<Beer> getWishlist() throws UntappdException {
+	public ArrayList<Beer> getWishlist() throws UntappdException {
 		Beer beer = null;
 		JSONArray array = new JSONArray();
 		
@@ -176,7 +178,7 @@ public class UntappdV4 {
 			throw ue;
 		}
 		
-		List<Beer> beers = new ArrayList<Beer>();
+		ArrayList<Beer> beers = new ArrayList<Beer>();
 		
 		for (int i=0; i<array.length(); ++i){
 			try {
@@ -213,12 +215,12 @@ public class UntappdV4 {
 		User user = null;
 		
 		try {
-			JSONObject object = postResponse(USER_INFO + "?access_token=" + mAccessToken);
-			if (object.getJSONObject("results") != null) {
+			JSONObject object = getResponse(USER_INFO + "?access_token=" + mAccessToken);
+			if (object.getJSONObject("response") != null) {
 				user = new UserParser().parse(object.getJSONObject("response").getJSONObject("user"));
 			}
 		} catch (JSONException e) {
-			Log.e("userInfo", e.getStackTrace().toString());
+			Log.e("userInfo", e.toString());
 		} catch (UntappdException ue) {
 			throw ue;
 		}
@@ -231,8 +233,8 @@ public class UntappdV4 {
 		
 		try {
 			JSONObject object = postResponse(CHECKIN_DETAILS + "?access_token=" + mAccessToken);
-			if (object.getJSONObject("results") != null) {
-				checkinDetails = new CheckinParser().parse(object.getJSONObject("results"));
+			if (object.getJSONObject("response") != null) {
+				checkinDetails = new CheckinParser().parse(object.getJSONObject("response"));
 			}
 		} catch (JSONException e) {
 			Log.e("userInfo", e.getStackTrace().toString());
@@ -258,9 +260,11 @@ public class UntappdV4 {
 			}
 			JSONTokener tokener = new JSONTokener(builder.toString());
 			object = new JSONObject(tokener);
-			if (object.getInt("http_code") == 401) {
+			
+			int responseCode = object.getJSONObject("meta").getInt("code");
+			if (responseCode == 401) {
 				throw new UntappdCredentialsException(object.getString("error"));
-			} else if (object.getInt("http_code") != 200) {
+			} else if (responseCode != 200) {
 				throw new UntappdException(object.getString("error"));
 			}
 			return object;
@@ -299,9 +303,11 @@ public class UntappdV4 {
 			}
 			JSONTokener tokener = new JSONTokener(builder.toString());
 			object = new JSONObject(tokener);
-			if (object.getInt("http_code") == 401) {
+			
+			int responseCode = object.getJSONObject("meta").getInt("code");
+			if (responseCode == 401) {
 				throw new UntappdCredentialsException(object.getString("error"));
-			} else if (object.getInt("http_code") != 200) {
+			} else if (responseCode != 200) {
 				throw new UntappdException(object.getString("error"));
 			}
 			return object;
