@@ -20,13 +20,13 @@ public class UntappdOAuthActivity extends Activity {
         
         Bundle extras = getIntent().getExtras();
     	String clientId = extras.getString("clientId");
-    	String callbackUrl = extras.getString("callbackUrl");
+    	String redirectUrl = extras.getString("redirectUrl");
 
         String url =
             "http://untappd.com/oauth/authenticate" + 
                 "?client_id=" + clientId + 
                 "&response_type=token" + 
-                "&redirect_url=" + callbackUrl;
+                "&redirect_url=" + redirectUrl;
         
         // "After the user has logged in we will redirect back to the following address: 
        	//  http://REDIRECT_URL#access_token=TOKENHERE"
