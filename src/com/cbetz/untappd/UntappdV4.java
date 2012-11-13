@@ -26,11 +26,13 @@ import android.util.Log;
 
 import com.cbetz.untappd.exceptions.UntappdCredentialsException;
 import com.cbetz.untappd.exceptions.UntappdException;
+import com.cbetz.untappdv4.parsers.BreweryParser;
 import com.cbetz.untappdv4.parsers.CheckinParser;
 import com.cbetz.untappdv4.parsers.BeerParser;
 import com.cbetz.untappdv4.parsers.CheckinResponseParser;
 import com.cbetz.untappdv4.parsers.UserParser;
 import com.cbetz.untappdv4.types.Beer;
+import com.cbetz.untappdv4.types.Brewery;
 import com.cbetz.untappdv4.types.Checkin;
 import com.cbetz.untappdv4.types.CheckinResponse;
 import com.cbetz.untappdv4.types.User;
@@ -54,6 +56,7 @@ public class UntappdV4 {
 	
 	public ArrayList<Beer> beerSearch(String q, String sort) throws UntappdException {
 		Beer beer = null;
+		Brewery brewery = null;
 		JSONArray array = new JSONArray();
 		
 		try {
@@ -70,6 +73,8 @@ public class UntappdV4 {
 		for (int i=0; i<array.length(); ++i){
 			try {
 				beer = new BeerParser().parse(array.getJSONObject(i).getJSONObject("beer"));
+				brewery = new BreweryParser().parse(array.getJSONObject(i).getJSONObject("brewery"));
+				beer.setBrewery(brewery);
 			} catch (JSONException e2) {
 				Log.e("beerSearch", e2.getStackTrace().toString());
 			}
@@ -82,7 +87,7 @@ public class UntappdV4 {
 		Beer beer = null;
 		
 		try {
-			JSONObject object = getResponse(BEER_INFO + "?access_token=" + mAccessToken + "&bid=" + bid);
+			JSONObject object = getResponse(BEER_INFO + "/" + bid + "?access_token=" + mAccessToken);
 			beer = new BeerParser().parse(object.getJSONObject("response").getJSONObject("beer"));
 		} catch (JSONException e) {
 			Log.e("beerInfo", e.getStackTrace().toString());
