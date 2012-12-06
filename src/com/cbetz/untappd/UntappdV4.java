@@ -98,18 +98,19 @@ public class UntappdV4 {
 		return beer;
 	}
 	
-	public CheckinResponse beerCheckin(String bid, String timezone, String shout, String rating, String twitter, String facebook) throws UntappdException {
+	public CheckinResponse beerCheckin(String bid, String timezone, String offset, String shout, String rating, String twitter, String facebook) throws UntappdException {
 		CheckinResponse checkin = null;
 		
 		try {		
 			JSONObject object = postResponse(BEER_CHECKIN + "?access_token=" + mAccessToken, 
 					new BasicNameValuePair("bid", bid),
-					new BasicNameValuePair("gmt_offset", timezone),
+					new BasicNameValuePair("timezone", timezone),
+					new BasicNameValuePair("gmt_offset", offset),
 					new BasicNameValuePair("shout", shout),
 					new BasicNameValuePair("rating", rating),
 					new BasicNameValuePair("twitter", twitter),
 					new BasicNameValuePair("facebook", facebook));
-			checkin = new CheckinResponseParser().parse(object);		
+			checkin = new CheckinResponseParser().parse(object.getJSONObject("response"));		
 		} catch (JSONException e) {
 			Log.e("beerCheckin", e.getStackTrace().toString());
 		} catch (UntappdException ue) {
@@ -118,13 +119,14 @@ public class UntappdV4 {
 		return checkin;
 	}
 	
-	public CheckinResponse beerCheckin(String bid, String timezone, String shout, String rating, String twitter, String facebook, String foursquareId, String lat, String lng, String foursquare) throws UntappdException {
+	public CheckinResponse beerCheckin(String bid, String timezone, String offset, String shout, String rating, String twitter, String facebook, String foursquareId, String lat, String lng, String foursquare) throws UntappdException {
 		CheckinResponse checkin = null;
 		
 		try {
 			JSONObject object = postResponse(BEER_CHECKIN + "?access_token=" + mAccessToken, 
 					new BasicNameValuePair("bid", bid),
-					new BasicNameValuePair("gmt_offset", timezone),
+					new BasicNameValuePair("timezone", timezone),
+					new BasicNameValuePair("gmt_offset", offset),
 					new BasicNameValuePair("shout", shout),
 					new BasicNameValuePair("rating", rating),
 					new BasicNameValuePair("twitter", twitter),
@@ -133,7 +135,7 @@ public class UntappdV4 {
 					new BasicNameValuePair("geolng", lng),
 					new BasicNameValuePair("foursquare_id", foursquareId),
 					new BasicNameValuePair("foursquare", foursquare));
-			checkin = new CheckinResponseParser().parse(object);
+			checkin = new CheckinResponseParser().parse(object.getJSONObject("response"));
 		} catch (JSONException e) {
 			Log.e("beerCheckin", e.getStackTrace().toString());
 		} catch (UntappdException ue) {
