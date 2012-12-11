@@ -2,47 +2,64 @@ package com.cbetz.untappd.types;
 
 public class Badge {
 	private String mName;
-	private String mDescrip;
-	private String mImgSm;
-	private String mImgMd;
-	private String mImgLg;
-	
-	public Badge(String name, String descrip, String imgSm, String imgMd, String imgLg){
-		setName(name);
-		setDescrip(descrip);
-		setImgSm(imgSm);
-		setImgMd(imgMd);
-		setImgLg(imgLg);
-	}
-	
-	public void setName(String mName) {
-		this.mName = mName;
-	}
+    private String mDescription;
+    private String mCreatedAt;
+    private Image mImage;
+
+    public static class Image {
+    	private String mSm;
+    	private String mMd;
+    	private String mLg;
+    	
+		public String getSm() {
+			return mSm;
+		}
+		public void setSm(String sm) {
+			this.mSm = sm;
+		}
+		public String getMd() {
+			return mMd;
+		}
+		public void setMd(String md) {
+			this.mMd = md;
+		}
+		public String getLg() {
+			return mLg;
+		}
+		public void setLg(String lg) {
+			this.mLg = lg;
+		}
+    }
+
 	public String getName() {
 		return mName;
 	}
-	public void setDescrip(String mDescrip) {
-		this.mDescrip = mDescrip;
+
+	public void setName(String name) {
+		this.mName = name;
 	}
-	public String getDescrip() {
-		return mDescrip;
+
+	public String getDescription() {
+		return mDescription;
 	}
-	public void setImgSm(String mImgSm) {
-		this.mImgSm = mImgSm;
+
+	public void setDescription(String description) {
+		this.mDescription = description;
 	}
-	public String getImgSm() {
-		return mImgSm;
+
+	public String getCreatedAt() {
+		return mCreatedAt;
 	}
-	public void setImgMd(String mImgMd) {
-		this.mImgMd = mImgMd;
+
+	public void setCreatedAt(String createdAt) {
+		this.mCreatedAt = createdAt;
 	}
-	public String getImgMd() {
-		return mImgMd;
+
+	public Image getImage() {
+		return mImage;
 	}
-	public void setImgLg(String mImgLg) {
-		this.mImgLg = mImgLg;
-	}
-	public String getImgLg() {
-		return mImgLg;
+
+	public void setImage(Image image) {
+		this.mImage = image;
 	}
 }

@@ -1,9 +1,9 @@
-package com.cbetz.untappdv4.parsers;
+package com.cbetz.untappd.parsers;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.cbetz.untappdv4.types.User;
+import com.cbetz.untappd.types.User;
 
 public class UserParser {
 	public User parse(JSONObject obj) throws JSONException {

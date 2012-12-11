@@ -1,173 +1,203 @@
 package com.cbetz.untappd.types;
 
 public class User {
-	private int mUid;
+	private int mId;
 	private String mUserName;
 	private String mFirstName;
 	private String mLastName;
-	private String mUserAvatar;
+	private String mAvatar;
+	private int mIsPrivate;
 	private String mLocation;
-    private String mBio;
-    private String mUrl;
-    private String mDateJoined;
-    private boolean mIsPrivate;
-    private int mTotalBadges;
-    private int mTotalFriends;
-    private int mTotalCheckins;
-    private int mTotalBeers;
-    private int mTotalCreatedBeers;
-    private boolean mTwitter;
-    private boolean mFoursquare;
-    private boolean mFacebook;
-    //private boolean mGowalla;
-    
-    public User(int uid, String userName, String firstName, String lastName,
-    		String userAvatar, String location, String bio,
-    		String url, String dateJoined, boolean isPrivate, int totalBadges,
-    		int totalFriends, int totalCheckins, int totalBeers, 
-    		int totalCreatedBeers, boolean twitter, boolean foursquare, 
-    		boolean facebook/*, boolean gowalla*/){
-    	setUid(uid);
-    	setUserName(userName);
-    	setFirstName(firstName);
-    	setLastName(lastName);
-    	setUserAvatar(userAvatar);
-    	setLocation(location);
-    	setBio(bio);
-    	setUrl(url);
-    	setDateJoined(dateJoined);
-    	setIsPrivate(isPrivate);
-    	setTotalBadges(totalBadges);
-    	setTotalFriends(totalFriends);
-    	setTotalCheckins(totalCheckins);
-    	setTotalBeers(totalBeers);
-    	setTotalCreatedBeers(totalCreatedBeers);
-    	setTwitter(twitter);
-    	setFoursquare(foursquare);
-    	setFacebook(facebook);
-    	//setGowalla(gowalla);
-    }
-    
-	public void setUid(int mUid) {
-		this.mUid = mUid;
+	private String mUrl;
+	private String mBio;
+	private String mRelationship;
+	private String mUntappdUrl;
+	private String mAccountType;
+	private String mDateJoined;
+	private Contact mContact;
+	private Stats mStats;
+	
+	public static class Contact {	
+		private int mFoursquare;
+		private int mFacebook;
+		private String mTwitter;
+			
+		public int getFoursquare() {
+			return mFoursquare;
+		}
+		public void setFoursquare(int foursquare) {
+			this.mFoursquare = foursquare;
+		}
+		public int getFacebook() {
+			return mFacebook;
+		}
+		public void setFacebook(int facebook) {
+			this.mFacebook = facebook;
+		}
+		public String getTwitter() {
+			return mTwitter;
+		}
+		public void setTwitter(String twitter) {
+			this.mTwitter = twitter;
+		} 
 	}
-	public int getUid() {
-		return mUid;
+	
+	public static class Stats {			
+	    private int mTotalBadges;
+	    private int mTotalFriends;
+	    private int mTotalCheckins;
+	    private int mTotalBeers;
+	    private int mTotalCreatedBeers;
+	    	    
+		public int getTotalBadges() {
+			return mTotalBadges;
+		}
+		public void setTotalBadges(int totalBadges) {
+			this.mTotalBadges = totalBadges;
+		}
+		public int getTotalFriends() {
+			return mTotalFriends;
+		}
+		public void setTotalFriends(int totalFriends) {
+			this.mTotalFriends = totalFriends;
+		}
+		public int getTotalCheckins() {
+			return mTotalCheckins;
+		}
+		public void setTotalCheckins(int totalCheckins) {
+			this.mTotalCheckins = totalCheckins;
+		}
+		public int getTotalBeers() {
+			return mTotalBeers;
+		}
+		public void setTotalBeers(int totalBeers) {
+			this.mTotalBeers = totalBeers;
+		}
+		public int getTotalCreatedBeers() {
+			return mTotalCreatedBeers;
+		}
+		public void setTotalCreatedBeers(int totalCreatedBeers) {
+			this.mTotalCreatedBeers = totalCreatedBeers;
+		}
 	}
-	public void setUserName(String mUserName) {
-		this.mUserName = mUserName;
+
+	public int getId() {
+		return mId;
 	}
+
+	public void setId(int id) {
+		this.mId = id;
+	}
+
 	public String getUserName() {
 		return mUserName;
 	}
-	public void setFirstName(String mFirstName) {
-		this.mFirstName = mFirstName;
+
+	public void setUserName(String userName) {
+		this.mUserName = userName;
 	}
+
 	public String getFirstName() {
 		return mFirstName;
 	}
-	public void setLastName(String mLastName) {
-		this.mLastName = mLastName;
+
+	public void setFirstName(String firstName) {
+		this.mFirstName = firstName;
 	}
+
 	public String getLastName() {
 		return mLastName;
 	}
-	public void setUserAvatar(String mUserAvatar) {
-		this.mUserAvatar = mUserAvatar;
+
+	public void setLastName(String lastName) {
+		this.mLastName = lastName;
 	}
-	public String getUserAvatar() {
-		return mUserAvatar;
+
+	public String getAvatar() {
+		return mAvatar;
 	}
-	public void setLocation(String mLocation) {
-		this.mLocation = mLocation;
+
+	public void setAvatar(String avatar) {
+		this.mAvatar = avatar;
 	}
+
+	public int getIsPrivate() {
+		return mIsPrivate;
+	}
+
+	public void setIsPrivate(int isPrivate) {
+		this.mIsPrivate = isPrivate;
+	}
+
 	public String getLocation() {
 		return mLocation;
 	}
-	public void setBio(String mBio) {
-		this.mBio = mBio;
+
+	public void setLocation(String location) {
+		this.mLocation = location;
 	}
-	public String getBio() {
-		return mBio;
-	}
-	public void setUrl(String mUrl) {
-		this.mUrl = mUrl;
-	}
+
 	public String getUrl() {
 		return mUrl;
 	}
-	public void setDateJoined(String mDateJoined) {
-		this.mDateJoined = mDateJoined;
+
+	public void setUrl(String url) {
+		this.mUrl = url;
 	}
+
+	public String getBio() {
+		return mBio;
+	}
+
+	public void setBio(String bio) {
+		this.mBio = bio;
+	}
+
+	public String getRelationship() {
+		return mRelationship;
+	}
+
+	public void setRelationship(String relationship) {
+		this.mRelationship = relationship;
+	}
+
+	public String getUntappdUrl() {
+		return mUntappdUrl;
+	}
+
+	public void setUntappdUrl(String untappdUrl) {
+		this.mUntappdUrl = untappdUrl;
+	}
+
+	public String getAccountType() {
+		return mAccountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.mAccountType = accountType;
+	}
+
 	public String getDateJoined() {
 		return mDateJoined;
 	}
-	public void setIsPrivate(boolean mIsPrivate) {
-		this.mIsPrivate = mIsPrivate;
-	}
-	public boolean isIsPrivate() {
-		return mIsPrivate;
-	}
-	public void setTotalBadges(int mTotalBadges) {
-		this.mTotalBadges = mTotalBadges;
-	}
-	public int getTotalBadges() {
-		return mTotalBadges;
-	}
-	public void setTotalFriends(int mTotalFriends) {
-		this.mTotalFriends = mTotalFriends;
-	}
-	public int getTotalFriends() {
-		return mTotalFriends;
-	}
-	public void setTotalCheckins(int mTotalCheckins) {
-		this.mTotalCheckins = mTotalCheckins;
-	}
-	public int getTotalCheckins() {
-		return mTotalCheckins;
-	}
-	public void setTotalBeers(int mTotalBeers) {
-		this.mTotalBeers = mTotalBeers;
-	}
-	public int getTotalBeers() {
-		return mTotalBeers;
-	}
-	public void setTotalCreatedBeers(int mTotalCreatedBeers) {
-		this.mTotalCreatedBeers = mTotalCreatedBeers;
-	}
-	public int getTotalCreatedBeers() {
-		return mTotalCreatedBeers;
+
+	public void setDateJoined(String dateJoined) {
+		this.mDateJoined = dateJoined;
 	}
 
-	public void setTwitter(boolean mTwitter) {
-		this.mTwitter = mTwitter;
+	public Contact getContact() {
+		return mContact;
 	}
 
-	public boolean hasTwitter() {
-		return mTwitter;
+	public void setContact(Contact contact) {
+		this.mContact = contact;
 	}
 
-	public void setFoursquare(boolean mFoursquare) {
-		this.mFoursquare = mFoursquare;
+	public Stats getStats() {
+		return mStats;
 	}
 
-	public boolean hasFoursquare() {
-		return mFoursquare;
+	public void setStats(Stats stats) {
+		this.mStats = stats;
 	}
-
-	public void setFacebook(boolean mFacebook) {
-		this.mFacebook = mFacebook;
-	}
-
-	public boolean hasFacebook() {
-		return mFacebook;
-	}
-
-	/*public void setGowalla(boolean mGowalla) {
-		this.mGowalla = mGowalla;
-	}
-
-	public boolean hasGowalla() {
-		return mGowalla;
-	}*/
 }

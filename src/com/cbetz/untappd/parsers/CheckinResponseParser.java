@@ -1,4 +1,4 @@
-package com.cbetz.untappdv4.parsers;
+package com.cbetz.untappd.parsers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.cbetz.untappdv4.types.Badge;
-import com.cbetz.untappdv4.types.CheckinResponse;;
+import com.cbetz.untappd.types.Badge;
+import com.cbetz.untappd.types.CheckinResponse;;
 
 public class CheckinResponseParser {
 	public CheckinResponse parse(JSONObject obj) throws JSONException {

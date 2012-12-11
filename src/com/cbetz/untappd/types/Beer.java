@@ -1,150 +1,143 @@
 package com.cbetz.untappd.types;
 
 public class Beer {
-	private int mBeerId;
-	private String mBeerName;
-	private String mBeerStamp;
-	private String mBreweryName;
-	private String mTotalCount;
-	private String mUniqueCount;
-	private String mMonthlyCount;
-	private String mWeeklyCount;
-	private String mBeerAbv;
-	private String mType;
-	private int mAvgRating;
-	private int mYourRating;
-	private boolean mIsHad;
+	private int mId;
+	private String mName;
+	private String mLabel;
+	private double mAbv; 
+	private String mDescription;
+	private String mStyle;
+	private int mIsInProduction; 
+	private int mIsHomebrew; 
+	private String mCreatedAt;
+	private int mRatingCount;
+	private double mRatingScore;
+	private int mAuthRating;
+	private boolean mWishList;
+	private Stats mStats;
+	private Brewery mBrewery;
 	
-	public Beer(int beerId, String beerName, String breweryName, String beerStamp) {
-		setBeerId(beerId);
-		setBeerName(beerName);
-		setBreweryName(breweryName);
-		setBeerStamp(beerStamp);
+	public static class Stats {
+	    private int mTotalCount;
+	    private int mMonthlyCount;
+	    private int mUserCount;
+	    private int mTotalUserCount;
+	    
+		public int getTotalCount() {
+			return mTotalCount;
+		}
+		public void setTotalCount(int totalCount) {
+			this.mTotalCount = totalCount;
+		}
+		public int getMonthlyCount() {
+			return mMonthlyCount;
+		}
+		public void setMonthlyCount(int monthlyCount) {
+			this.mMonthlyCount = monthlyCount;
+		}
+		public int getUserCount() {
+			return mUserCount;
+		}
+		public void setUserCount(int userCount) {
+			this.mUserCount = userCount;
+		}
+		public int getTotalUserCount() {
+			return mTotalUserCount;
+		}
+		public void setTotalUserCount(int totalUserCount) {
+			this.mTotalUserCount = totalUserCount;
+		}
 	}
 	
-	public Beer(int beerId, String beerName, String breweryName, String beerStamp, 
-		String totalCount, String uniqueCount, String monthlyCount, 
-		String weeklyCount, String beerAbv, String type, int avgRating, int yourRating,
-		boolean isHad) {
-			setBeerId(beerId);
-			setBeerName(beerName);
-			setBreweryName(breweryName);
-			setBeerStamp(beerStamp);
-			setTotalCount(totalCount);
-			setUniqueCount(uniqueCount);
-			setMonthlyCount(monthlyCount);
-			setWeeklyCount(weeklyCount);
-			setBeerAbv(beerAbv);
-			setType(type);
-			setAvgRating(avgRating);
-			setYourRating(yourRating);
-			setIsHad(isHad);
+	public int getId() {
+		return mId;
 	}
-	
-	public Beer() {
+	public void setId(int id) {
+		this.mId = id;
 	}
-
-	public void setBeerId(int mBeerId) {
-		this.mBeerId = mBeerId;
+	public String getName() {
+		return mName;
 	}
-
-	public int getBeerId() {
-		return mBeerId;
+	public void setName(String name) {
+		this.mName = name;
 	}
-
-	public void setBeerName(String mBeerName) {
-		this.mBeerName = mBeerName;
+	public String getLabel() {
+		return mLabel;
 	}
-
-	public String getBeerName() {
-		return mBeerName;
+	public void setLabel(String label) {
+		this.mLabel = label;
 	}
-
-	public void setBeerStamp(String mBeerStamp) {
-		this.mBeerStamp = mBeerStamp;
+	public double getAbv() {
+		return mAbv;
 	}
-
-	public String getBeerStamp() {
-		return mBeerStamp;
+	public void setAbv(double abv) {
+		this.mAbv = abv;
 	}
-
-	public void setBreweryName(String mBreweryName) {
-		this.mBreweryName = mBreweryName;
+	public String getDescription() {
+		return mDescription;
 	}
-
-	public String getBreweryName() {
-		return mBreweryName;
+	public void setDescription(String description) {
+		this.mDescription = description;
 	}
-
-	public void setTotalCount(String mTotalCount) {
-		this.mTotalCount = mTotalCount;
+	public String getStyle() {
+		return mStyle;
 	}
-
-	public String getTotalCount() {
-		return mTotalCount;
+	public void setStyle(String style) {
+		this.mStyle = style;
 	}
-
-	public void setUniqueCount(String mUniqueCount) {
-		this.mUniqueCount = mUniqueCount;
+	public int isIsInProduction() {
+		return mIsInProduction;
 	}
-
-	public String getUniqueCount() {
-		return mUniqueCount;
+	public void setIsInProduction(int isInProduction) {
+		this.mIsInProduction = isInProduction;
 	}
-
-	public void setMonthlyCount(String mMonthlyCount) {
-		this.mMonthlyCount = mMonthlyCount;
+	public int isIsHomebrew() {
+		return mIsHomebrew;
 	}
-
-	public String getMonthlyCount() {
-		return mMonthlyCount;
+	public void setIsHomebrew(int isHomebrew) {
+		this.mIsHomebrew = isHomebrew;
 	}
-
-	public void setWeeklyCount(String mWeeklyCount) {
-		this.mWeeklyCount = mWeeklyCount;
+	public String getCreatedAt() {
+		return mCreatedAt;
 	}
-
-	public String getWeeklyCount() {
-		return mWeeklyCount;
+	public void setCreatedAt(String createdAt) {
+		this.mCreatedAt = createdAt;
 	}
-
-	public void setBeerAbv(String mBeerAbv) {
-		this.mBeerAbv = mBeerAbv;
+	public int getRatingCount() {
+		return mRatingCount;
 	}
-
-	public String getBeerAbv() {
-		return mBeerAbv;
+	public void setRatingCount(int ratingCount) {
+		this.mRatingCount = ratingCount;
+	}
+	public double getRatingScore() {
+		return mRatingScore;
+	}
+	public void setRatingScore(double ratingScore) {
+		this.mRatingScore = ratingScore;
+	}
+	public int getAuthRating() {
+		return mAuthRating;
+	}
+	public void setAuthRating(int authRating) {
+		this.mAuthRating = authRating;
+	}
+	public boolean isWishList() {
+		return mWishList;
+	}
+	public void setWishList(boolean wishList) {
+		this.mWishList = wishList;
+	}
+	public Stats getStats() {
+		return mStats;
+	}
+	public void setStats(Stats stats) {
+		this.mStats = stats;
+	}
+	public Brewery getBrewery() {
+		return mBrewery;
+	}
+	public void setBrewery(Brewery brewery) {
+		this.mBrewery = brewery;
 	}
 
-	public void setType(String mType) {
-		this.mType = mType;
-	}
-
-	public String getType() {
-		return mType;
-	}
-
-	public void setAvgRating(int avgRating) {
-		this.mAvgRating = avgRating;
-	}
-
-	public int getAvgRating() {
-		return mAvgRating;
-	}
-
-	public void setYourRating(int mYourRating) {
-		this.mYourRating = mYourRating;
-	}
-
-	public int getYourRating() {
-		return mYourRating;
-	}
-
-	public void setIsHad(boolean mIsHad) {
-		this.mIsHad = mIsHad;
-	}
-
-	public boolean getIsHad() {
-		return mIsHad;
-	}
 }

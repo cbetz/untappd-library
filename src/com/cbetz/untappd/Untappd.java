@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,67 +22,63 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import android.util.Base64;
 import android.util.Log;
 
 import com.cbetz.untappd.exceptions.UntappdCredentialsException;
 import com.cbetz.untappd.exceptions.UntappdException;
-import com.cbetz.untappd.parsers.BeerInfoParser;
-import com.cbetz.untappd.parsers.BeerListParser;
-import com.cbetz.untappd.parsers.CheckinDetailsParser;
+import com.cbetz.untappd.parsers.BreweryParser;
 import com.cbetz.untappd.parsers.CheckinParser;
-import com.cbetz.untappd.parsers.UserCheckinParser;
-import com.cbetz.untappd.parsers.UserInfoParser;
+import com.cbetz.untappd.parsers.BeerParser;
+import com.cbetz.untappd.parsers.CheckinResponseParser;
+import com.cbetz.untappd.parsers.UserParser;
 import com.cbetz.untappd.types.Beer;
+import com.cbetz.untappd.types.Brewery;
 import com.cbetz.untappd.types.Checkin;
-import com.cbetz.untappd.types.CheckinDetails;
+import com.cbetz.untappd.types.CheckinResponse;
 import com.cbetz.untappd.types.User;
-import com.cbetz.untappd.types.UserCheckin;
-import com.cbetz.untappd.util.Util;
 
 public class Untappd {
-	private static final String API_ENDPOINT = "http://api.untappd.com/v3";
-	private static final String BEER_CHECKIN = "/checkin";	
-	private static final String BEER_INFO = "/beer_info";
-	private static final String BEER_SEARCH = "/beer_search";
-	private static final String CHECKIN_DETAILS = "/details";
-	private static final String FRIEND_FEED = "/feed";
-	private static final String USER_INFO = "/user";
-	private static final String WISHLIST = "/wish_list";
-	private static final String WISHLIST_ADD = "/add_to_wish";
-	private static final String WISHLIST_REMOVE = "/remove_from_wish";
-	private String key;
-	private String username;
-	private String password;
+	private static final String API_ENDPOINT = "http://api.untappd.com/v4";
+	private static final String BEER_CHECKIN = "/checkin/add";	
+	private static final String BEER_INFO = "/beer/info";
+	private static final String BEER_SEARCH = "/search/beer";
+	private static final String CHECKIN_DETAILS = "/checkin/view";
+	private static final String FRIEND_FEED = "/checkin/recent";
+	private static final String USER_INFO = "/user/info";
+	private static final String WISHLIST = "/user/wishlist";
+	private static final String WISHLIST_ADD = "/user/wishlist/add";
+	private static final String WISHLIST_REMOVE = "/user/wishlist/delete";
+	private String mAccessToken;
 	
-	public Untappd(String key, String username, String password) {
-		setUsername(username);
-		setPassword(password);
-		setKey(key);
+	public Untappd(String accessToken) {
+		mAccessToken = accessToken;
 	}
 	
-	public Beer[] beerSearch(String q, String sort) throws UntappdException {
+	public ArrayList<Beer> beerSearch(String q, String sort) throws UntappdException {
 		Beer beer = null;
+		Brewery brewery = null;
 		JSONArray array = new JSONArray();
 		
 		try {
-			JSONObject object = getResponse(BEER_SEARCH + "?key=" + key + "&q=" + URLEncoder.encode(q) + "&sort=" + sort);
-			array = object.getJSONArray("results");
+			JSONObject object = getResponse(BEER_SEARCH + "?access_token=" + mAccessToken + "&q=" + URLEncoder.encode(q) + "&sort=" + sort);
+			array = object.getJSONObject("response").getJSONObject("beers").getJSONArray("items");
 		} catch (JSONException e1) {
 			Log.e("beerSearch", e1.getStackTrace().toString());
 		} catch (UntappdException ue) {
 			throw ue;
 		}
 		
-		Beer[] beers = new Beer[array.length()];
+		ArrayList<Beer> beers = new ArrayList<Beer>();
 		
 		for (int i=0; i<array.length(); ++i){
 			try {
-				beer = new BeerListParser().parse(array.getJSONObject(i));
+				beer = new BeerParser().parse(array.getJSONObject(i).getJSONObject("beer"));
+				brewery = new BreweryParser().parse(array.getJSONObject(i).getJSONObject("brewery"));
+				beer.setBrewery(brewery);
 			} catch (JSONException e2) {
 				Log.e("beerSearch", e2.getStackTrace().toString());
 			}
-			beers[i] = beer;
+			beers.add(beer);
 		}
 		return beers;
 	}
@@ -92,8 +87,8 @@ public class Untappd {
 		Beer beer = null;
 		
 		try {
-			JSONObject object = getResponse(BEER_INFO + "?key=" + key + "&bid=" + bid);
-			beer = new BeerInfoParser().parse(object.getJSONObject("results"));
+			JSONObject object = getResponse(BEER_INFO + "/" + bid + "?access_token=" + mAccessToken);
+			beer = new BeerParser().parse(object.getJSONObject("response").getJSONObject("beer"));
 		} catch (JSONException e) {
 			Log.e("beerInfo", e.getStackTrace().toString());
 		} catch (UntappdException ue) {
@@ -103,18 +98,19 @@ public class Untappd {
 		return beer;
 	}
 	
-	public Checkin beerCheckin(String bid, String timezone, String shout, String rating, String twitter, String facebook) throws UntappdException {
-		Checkin checkin = null;
+	public CheckinResponse beerCheckin(String bid, String timezone, String offset, String shout, String rating, String twitter, String facebook) throws UntappdException {
+		CheckinResponse checkin = null;
 		
 		try {		
-			JSONObject object = postResponse(BEER_CHECKIN + "?key=" + key, 
+			JSONObject object = postResponse(BEER_CHECKIN + "?access_token=" + mAccessToken, 
 					new BasicNameValuePair("bid", bid),
-					new BasicNameValuePair("gmt_offset", timezone),
+					new BasicNameValuePair("timezone", timezone),
+					new BasicNameValuePair("gmt_offset", offset),
 					new BasicNameValuePair("shout", shout),
-					new BasicNameValuePair("rating_value", rating),
+					new BasicNameValuePair("rating", rating),
 					new BasicNameValuePair("twitter", twitter),
 					new BasicNameValuePair("facebook", facebook));
-			checkin = new CheckinParser().parse(object);		
+			checkin = new CheckinResponseParser().parse(object.getJSONObject("response"));		
 		} catch (JSONException e) {
 			Log.e("beerCheckin", e.getStackTrace().toString());
 		} catch (UntappdException ue) {
@@ -123,22 +119,23 @@ public class Untappd {
 		return checkin;
 	}
 	
-	public Checkin beerCheckin(String bid, String timezone, String shout, String rating, String twitter, String facebook, String foursquareId, String lat, String lng, String foursquare) throws UntappdException {
-		Checkin checkin = null;
+	public CheckinResponse beerCheckin(String bid, String timezone, String offset, String shout, String rating, String twitter, String facebook, String foursquareId, String lat, String lng, String foursquare) throws UntappdException {
+		CheckinResponse checkin = null;
 		
 		try {
-			JSONObject object = postResponse(BEER_CHECKIN + "?key=" + key, 
+			JSONObject object = postResponse(BEER_CHECKIN + "?access_token=" + mAccessToken, 
 					new BasicNameValuePair("bid", bid),
-					new BasicNameValuePair("gmt_offset", timezone),
+					new BasicNameValuePair("timezone", timezone),
+					new BasicNameValuePair("gmt_offset", offset),
 					new BasicNameValuePair("shout", shout),
-					new BasicNameValuePair("rating_value", rating),
+					new BasicNameValuePair("rating", rating),
 					new BasicNameValuePair("twitter", twitter),
 					new BasicNameValuePair("facebook", facebook),
-					new BasicNameValuePair("user_lat", lat),
-					new BasicNameValuePair("user_lng", lng),
+					new BasicNameValuePair("geolat", lat),
+					new BasicNameValuePair("geolng", lng),
 					new BasicNameValuePair("foursquare_id", foursquareId),
 					new BasicNameValuePair("foursquare", foursquare));
-			checkin = new CheckinParser().parse(object);
+			checkin = new CheckinResponseParser().parse(object.getJSONObject("response"));
 		} catch (JSONException e) {
 			Log.e("beerCheckin", e.getStackTrace().toString());
 		} catch (UntappdException ue) {
@@ -147,24 +144,24 @@ public class Untappd {
 		return checkin;
 	}
 	
-	public UserCheckin[] getFriendFeed() throws UntappdException {
+	public Checkin[] getFriendFeed() throws UntappdException {
 		JSONArray array = new JSONArray();
 		
 		try {
-			JSONObject object = getResponse(FRIEND_FEED + "?key=" + key);
-			array = object.getJSONArray("results");
+			JSONObject object = getResponse(FRIEND_FEED + "?access_token=" + mAccessToken);
+			array = object.getJSONObject("response").getJSONObject("checkins").getJSONArray("items");
 		} catch (JSONException e1) {
 			Log.e("userCheckin", e1.getStackTrace().toString());
 		} catch (UntappdException ue) {
 			throw ue;
 		}
 			
-		UserCheckin[] userCheckins = new UserCheckin[array.length()];
-		UserCheckin userCheckin = null;
+		Checkin[] userCheckins = new Checkin[array.length()];
+		Checkin userCheckin = null;
 		
 		for (int i=0; i<array.length(); ++i){
 			try {
-				userCheckin = new UserCheckinParser().parse(array.getJSONObject(i));
+				userCheckin = new CheckinParser().parse(array.getJSONObject(i));
 			} catch (JSONException e2) {
 				Log.e("beerSearch", e2.getStackTrace().toString());
 			}
@@ -175,36 +172,35 @@ public class Untappd {
 		return userCheckins;
 	}
 	
-	public Beer[] getWishlist() throws UntappdException {
+	public ArrayList<Beer> getWishlist() throws UntappdException {
 		Beer beer = null;
 		JSONArray array = new JSONArray();
 		
 		try {
-			JSONObject object = getResponse(WISHLIST + "?key=" + key);
-			array = object.getJSONArray("results");
+			JSONObject object = getResponse(WISHLIST + "?access_token=" + mAccessToken);
+			array = object.getJSONObject("response").getJSONObject("beers").getJSONArray("items");
 		} catch (JSONException e1) {
-			Log.e("beerSearch", e1.getStackTrace().toString());
+			Log.e("getWishlist", e1.getStackTrace().toString());
 		} catch (UntappdException ue) {
 			throw ue;
 		}
 		
-		Beer[] beers = new Beer[array.length()];
+		ArrayList<Beer> beers = new ArrayList<Beer>();
 		
 		for (int i=0; i<array.length(); ++i){
 			try {
-				beer = new BeerListParser().parse(array.getJSONObject(i));
+				beer = new BeerParser().parse(array.getJSONObject(i));
 			} catch (JSONException e2) {
-				Log.e("beerSearch", e2.getStackTrace().toString());
+				Log.e("getWishlist", e2.getStackTrace().toString());
 			}
-			beers[i] = beer;
+			beers.add(beer);
 		}
 		return beers;
 	}
 	
 	public boolean wishlistAdd(String bid) throws UntappdException {
 		try {
-			postResponse(WISHLIST_ADD + "?key=" + key, 
-					new BasicNameValuePair("bid", bid));
+			getResponse(WISHLIST_ADD + "?access_token=" + mAccessToken + "&bid=" + bid);
 			return true;
 		} catch (UntappdException ue) {
 			throw ue;
@@ -213,8 +209,7 @@ public class Untappd {
 	
 	public boolean wishlistRemove(String bid) throws UntappdException {
 		try {
-			postResponse(WISHLIST_REMOVE + "?key=" + key, 
-					new BasicNameValuePair("bid", bid));
+			getResponse(WISHLIST_REMOVE + "?access_token=" + mAccessToken + "&bid=" + bid);
 			return true;
 		} catch (UntappdException ue) {
 			throw ue;
@@ -225,12 +220,12 @@ public class Untappd {
 		User user = null;
 		
 		try {
-			JSONObject object = postResponse(USER_INFO + "?key=" + key);
-			if (object.getJSONObject("results") != null) {
-				user = new UserInfoParser().parse(object.getJSONObject("results").getJSONObject("user"));
+			JSONObject object = getResponse(USER_INFO + "?access_token=" + mAccessToken);
+			if (object.getJSONObject("response") != null) {
+				user = new UserParser().parse(object.getJSONObject("response").getJSONObject("user"));
 			}
 		} catch (JSONException e) {
-			Log.e("userInfo", e.getStackTrace().toString());
+			Log.e("userInfo", e.toString());
 		} catch (UntappdException ue) {
 			throw ue;
 		}
@@ -238,13 +233,13 @@ public class Untappd {
 		return user;
 	}
 	
-	public CheckinDetails getCheckinDetails() throws UntappdException {
-		CheckinDetails checkinDetails = null;
+	public Checkin getCheckinDetails() throws UntappdException {
+		Checkin checkinDetails = null;
 		
 		try {
-			JSONObject object = postResponse(CHECKIN_DETAILS + "?key=" + key);
-			if (object.getJSONObject("results") != null) {
-				checkinDetails = new CheckinDetailsParser().parse(object.getJSONObject("results"));
+			JSONObject object = postResponse(CHECKIN_DETAILS + "?access_token=" + mAccessToken);
+			if (object.getJSONObject("response") != null) {
+				checkinDetails = new CheckinParser().parse(object.getJSONObject("response"));
 			}
 		} catch (JSONException e) {
 			Log.e("userInfo", e.getStackTrace().toString());
@@ -262,15 +257,6 @@ public class Untappd {
 		try {
 			HttpGet httpget = new HttpGet(API_ENDPOINT + url);
 			
-			//add the authentication parameters to the header 
-			String header;
-			try {
-				header = Base64.encodeToString((username + ":" + Util.md5(password)).getBytes("UTF-8"), Base64.NO_WRAP);
-				httpget.addHeader("Authorization", "Basic " + header);
-			} catch (UnsupportedEncodingException e) {
-				Log.e("getResponse", e.getStackTrace().toString());
-			}
-			
 			httpresponse = httpclient.execute(httpget);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(httpresponse.getEntity().getContent(), "UTF-8"));
 			StringBuilder builder = new StringBuilder();
@@ -279,9 +265,11 @@ public class Untappd {
 			}
 			JSONTokener tokener = new JSONTokener(builder.toString());
 			object = new JSONObject(tokener);
-			if (object.getInt("http_code") == 401) {
+			
+			int responseCode = object.getJSONObject("meta").getInt("code");
+			if (responseCode == 401) {
 				throw new UntappdCredentialsException(object.getString("error"));
-			} else if (object.getInt("http_code") != 200) {
+			} else if (responseCode != 200) {
 				throw new UntappdException(object.getString("error"));
 			}
 			return object;
@@ -302,14 +290,6 @@ public class Untappd {
 		HttpResponse httpresponse;
 		JSONObject object = null;
 		
-		String header;
-		try {
-			header = Base64.encodeToString((username + ":" + Util.md5(password)).getBytes("UTF-8"), Base64.NO_WRAP);
-			httppost.addHeader("Authorization", "Basic " + header);
-		} catch (UnsupportedEncodingException e) {
-			Log.e("getResponse", e.getStackTrace().toString());
-		}		
-		
 		try {
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			for (int i = 0; i < nameValuePairs.length; i++) {
@@ -328,9 +308,11 @@ public class Untappd {
 			}
 			JSONTokener tokener = new JSONTokener(builder.toString());
 			object = new JSONObject(tokener);
-			if (object.getInt("http_code") == 401) {
+			
+			int responseCode = object.getJSONObject("meta").getInt("code");
+			if (responseCode == 401) {
 				throw new UntappdCredentialsException(object.getString("error"));
-			} else if (object.getInt("http_code") != 200) {
+			} else if (responseCode != 200) {
 				throw new UntappdException(object.getString("error"));
 			}
 			return object;
@@ -344,28 +326,13 @@ public class Untappd {
 		
 		return object;
 	}
+
+	public String getAccessToken() {
+		return mAccessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.mAccessToken = accessToken;
+	}
 	
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getPassword() {
-		return password;
-	}	
 }

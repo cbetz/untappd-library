@@ -1,4 +1,4 @@
-package com.cbetz.untappdv4.types;
+package com.cbetz.untappd.types;
 
 import java.util.List;
 
