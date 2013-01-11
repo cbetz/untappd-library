@@ -47,7 +47,7 @@ public class Untappd {
 	private static final String USER_INFO = "/user/info";
 	private static final String WISHLIST = "/user/wishlist";
 	private static final String WISHLIST_ADD = "/user/wishlist/add";
-	private static final String WISHLIST_REMOVE = "/user/wishlist/delete";
+	private static final String WISHLIST_DELETE = "/user/wishlist/delete";
 	private String mAccessToken;
 	
 	public Untappd(String accessToken) {
@@ -209,7 +209,7 @@ public class Untappd {
 	
 	public boolean wishlistRemove(String bid) throws UntappdException {
 		try {
-			getResponse(WISHLIST_REMOVE + "?access_token=" + mAccessToken + "&bid=" + bid);
+			getResponse(WISHLIST_DELETE + "?access_token=" + mAccessToken + "&bid=" + bid);
 			return true;
 		} catch (UntappdException ue) {
 			throw ue;
@@ -270,7 +270,7 @@ public class Untappd {
 			if (responseCode == 401) {
 				throw new UntappdCredentialsException(object.getString("error"));
 			} else if (responseCode != 200) {
-				throw new UntappdException(object.getString("error"));
+				throw new UntappdException(object.getString("error_detail"));
 			}
 			return object;
 		} catch (ClientProtocolException e) {
