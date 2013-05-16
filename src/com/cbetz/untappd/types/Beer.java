@@ -12,7 +12,7 @@ public class Beer {
 	private String mCreatedAt;
 	private int mRatingCount;
 	private double mRatingScore;
-	private int mAuthRating;
+	private double mAuthRating;
 	private boolean mWishList;
 	private Stats mStats;
 	private Brewery mBrewery;
@@ -115,10 +115,10 @@ public class Beer {
 	public void setRatingScore(double ratingScore) {
 		this.mRatingScore = ratingScore;
 	}
-	public int getAuthRating() {
+	public double getAuthRating() {
 		return mAuthRating;
 	}
-	public void setAuthRating(int authRating) {
+	public void setAuthRating(double authRating) {
 		this.mAuthRating = authRating;
 	}
 	public boolean isWishList() {

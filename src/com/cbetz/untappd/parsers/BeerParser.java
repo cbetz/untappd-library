@@ -32,7 +32,7 @@ public class BeerParser {
 		if (obj.has("rating_score"))
 			beer.setRatingScore(obj.getDouble("rating_score"));
 		if (obj.has("auth_rating"))
-			beer.setAuthRating(obj.getInt("auth_rating"));
+			beer.setAuthRating(obj.getDouble("auth_rating"));
 		if (obj.has("wish_list"))
 			beer.setWishList(obj.getBoolean("wish_list"));
 		if (obj.has("stats"))

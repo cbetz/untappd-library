@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,12 +61,14 @@ public class Untappd {
 		JSONArray array = new JSONArray();
 		
 		try {
-			JSONObject object = getResponse(BEER_SEARCH + "?access_token=" + mAccessToken + "&q=" + URLEncoder.encode(q) + "&sort=" + sort);
+			JSONObject object = getResponse(BEER_SEARCH + "?access_token=" + mAccessToken + "&q=" + URLEncoder.encode(q, "UTF-8") + "&sort=" + sort);
 			array = object.getJSONObject("response").getJSONObject("beers").getJSONArray("items");
-		} catch (JSONException e1) {
-			Log.e("beerSearch", e1.getStackTrace().toString());
+		} catch (JSONException e) {
+			Log.e("beerSearch", e.getStackTrace().toString());
 		} catch (UntappdException ue) {
 			throw ue;
+		} catch (UnsupportedEncodingException e) {
+			Log.e("beerSearch", e.getStackTrace().toString());
 		}
 		
 		ArrayList<Beer> beers = new ArrayList<Beer>();
