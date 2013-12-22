@@ -39,7 +39,7 @@ import com.cbetz.untappd.types.CheckinResponse;
 import com.cbetz.untappd.types.User;
 
 public class Untappd {
-	private static final String API_ENDPOINT = "http://api.untappd.com/v4";
+	private static final String API_ENDPOINT = "https://api.untappd.com/v4";
 	private static final String BEER_CHECKIN = "/checkin/add";	
 	private static final String BEER_INFO = "/beer/info";
 	private static final String BEER_SEARCH = "/search/beer";
